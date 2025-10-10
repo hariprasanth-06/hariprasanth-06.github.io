@@ -1,0 +1,26 @@
+{
+  "name": "hariprasanth.github.io",
+  "version": "1.0.0",
+  "description": "A responsive portfolio website developed to present my Laravel and web development projects. Built with modern front-end styling and optimized for speed, usability, and clarity.",
+  "main": "postcss.config.js",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.3.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hariprasanth-06/hariprasanth.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/hariprasanth-06/hariprasanth.github.io/issues"
+  },
+  "homepage": "https://github.com/hariprasanth-06/hariprasanth.github.io#readme"
+}
