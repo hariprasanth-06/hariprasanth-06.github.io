@@ -9,6 +9,10 @@ module.exports = {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
       },
+      colors: {
+        coiffure_sec:  'rgb(255, 221, 215)',
+        
+      },
     },
   },
   plugins: [],
