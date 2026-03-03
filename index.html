@@ -276,31 +276,48 @@
 
 
 
-    <!-- Recent Projects -->
+    <!-- Featured Projects -->
     <section id="projects" class="container mx-auto px-4 py-20">
         <h2 class="text-4xl font-bold mb-12 text-center relative">
             FEATURED PROJECTS
             <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-red-600"></div>
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
-            <div
-                class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
+
+            <!-- Bharath InfraNet -->
+            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
+                <div class="h-60 flex items-center justify-center bg-blue-100 p-6">
+                    <img src="src/assets/bsnl_logo.webp"
+                         alt="Bharath InfraNet (BSNL)" class="h-auto w-3/4 object-contain px-10">
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold mb-2 text-xl">Bharath InfraNet — OFC Management</h3>
+                    <p class="text-gray-600 mb-4">
+                        Digitized BSNL's 5G OFC deployment — GPS route surveys, RKM planning, trenching, cable blowing &amp; fiber splicing. Backed by Laravel REST APIs and an optimized PostgreSQL schema for large-scale infrastructure data.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">PHP</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">PostgreSQL</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">REST API</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salon Management -->
+            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
                 <div class="h-60 flex items-center justify-center bg-coiffure_sec">
-                    <img src="src/assets/coiffure.webp" alt="Salon Management System"
-                        class="h-36 w-auto object-contain px-10">
+                    <img src="src/assets/coiffure74.png" alt="Salon Management System" class="h-36 w-3/4 object-contain px-10">
                 </div>
                 <div class="p-6">
                     <h3 class="font-bold mb-2 text-xl">Salon Management System</h3>
                     <p class="text-gray-600 mb-4">
                         A complete management platform for salons to handle billing, appointments, employees, and stock.
                         Features include real-time dashboards, invoice generation, multiple payment modes, and staff
-                        management. Built with <strong>Laravel</strong> and <strong>Tailwind CSS</strong> for smooth and
-                        efficient operations.
+                        management.
                     </p>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Livewire</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">MySQL</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Tailwind CSS</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Billing</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Appointment</span>
@@ -308,65 +325,89 @@
                 </div>
             </div>
 
-
-            <div
-                class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
+            <!-- Craft Beer NFT -->
+            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
                 <div class="h-60 flex items-center justify-center bg-black p-6">
-                    <img src="src/assets/gifmebeer.png" alt="Craft Beer NFT Collection"
-                        class="w-2/3 h-full object-scale-down cursor-pointer">
+                    <img src="src/assets/gifmebeer.png" alt="Craft Beer NFT Collection" class="w-2/3 h-full object-scale-down cursor-pointer">
                 </div>
                 <div class="p-6">
                     <h3 class="font-bold mb-2 text-xl">Craft Beer NFT Collection</h3>
                     <p class="text-gray-600 mb-4">
-                        A blockchain-powered digital collection platform featuring unique craft beer-themed NFT cards.
-                        The backend was built with <strong>Laravel</strong> for API and data management, while
-                        <strong>Next.js</strong> and <strong>Thirdweb</strong> were used for wallet authentication,
-                        NFT minting, and blockchain integration. Designed to deliver a seamless and secure NFT
-                        experience
-                        for collectors.
+                        A blockchain-powered digital collection platform featuring craft beer NFT cards. Built with Laravel for APIs, while Next.js &amp; Thirdweb handled wallet auth and NFT minting.
                     </p>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Livewire</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Next.js</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Thirdweb</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Blockchain</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">NFT</span>
                     </div>
                 </div>
             </div>
 
-
-            <div
-                class="rounded-lg overflow-hidden  cursor-pointer shadow-lg bg-white hover:shadow-2xl  transition-shadow duration-300">
-                <div class="h-60  flex items-center justify-center">
+            <!-- A & F VENTUREZ -->
+            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
+                <div class="h-60 flex items-center justify-center bg-white border-b border-gray-100">
                     <img src="src/assets/anf.png" alt="ANF VENTUREZ" class="w-full h-full object-contain cursor-pointer">
                 </div>
                 <div class="p-6">
-                    <h3 class="font-bold mb-2 text-xl">A &amp; F VENTUREZ — Last Mile Delivery</h3>
+                    <h3 class="font-bold mb-2 text-xl">A &amp; F VENTUREZ — Last Mile</h3>
                     <p class="text-gray-600 mb-4">
-                        A &amp; F VENTUREZ is a last-mile delivery service provider for
-                        <strong>Amazon</strong> and <strong>Flipkart</strong> in India.
-                        We offer <strong>logistics</strong>, <strong>manpower</strong>, and
-                        <strong>warehousing</strong> solutions to e-commerce companies.
-                        Starting in <strong>September 2021</strong> with just five associates in Madurai,
-                        we’ve grown to <strong>150+ members</strong>, delivering over
-                        <strong>5000 packages daily</strong> across Tamil Nadu.
+                        Last-mile delivery for Amazon &amp; Flipkart in India. Offers logistics, manpower, and warehousing solutions. Grown to 150+ members delivering 5000+ packages daily.
                     </p>
                     <div class="flex flex-wrap gap-2 mt-2">
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Logistics</span>
+                          <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Payroll</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Manpower</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Warehousing</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
                         <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">jQuery</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Ajax</span>
 
                     </div>
                 </div>
             </div>
+
+            <!-- School Management -->
+            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
+                 <div class="h-60 flex items-center justify-center bg-white border-b border-gray-100">
+                    <img src="src/assets/school_management.webp" alt="School Management System" class="w-full h-full object-contain cursor-pointer">
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold mb-2 text-xl">School Management System</h3>
+                    <p class="text-gray-600 mb-4">
+                        Automates manual tasks like student enrollment, attendance, and grade management. Enhances communication with integrated messaging, improving overall collaboration and administrative efficiency for educational institutions.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">PHP</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">MySQL</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Livewire</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mercy Masala -->
+            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
+                <div class="h-60 flex items-center justify-center bg-white border-b border-gray-100">
+                    <img src="src/assets/mercy_masala.webp" alt="Mercy Masala" class="w-32 h-32 object-contain cursor-pointer">
+                </div>
+                <div class="p-6">
+                    <h3 class="font-bold mb-2 text-xl">Mercy Masala — Spice Showcase</h3>
+                    <p class="text-gray-600 mb-4">
+                        An elegant static website showcasing premium masala powder collection with beautiful product displays and inquiry forms. Built with modern design principles and responsive layouts for optimal user experience.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Tailwind CSS</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">HTML</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Flowbite</span>
+                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Enquiry</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <!-- Stats -->
+        <!-- Stats -->
     <section class="bg-gradient-to-r from-red-600 to-red-700 text-white py-20">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
