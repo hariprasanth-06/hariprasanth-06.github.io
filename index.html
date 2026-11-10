@@ -1,489 +1,1352 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hariprasanth - Laravel Developer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="./dist/output.css?v=1" rel="stylesheet">
-    <!-- Add Laravel icon -->
+    <title>Hari Prasanth — Scalable Backend & Laravel Architect</title>
+    <meta name="description" content="Portfolio of Hari Prasanth — Scalable Systems & Laravel Developer specialized in high-throughput REST APIs, PostgreSQL GIS infrastructure for BSNL 5G, and high-volume logistics.">
+    <meta name="color-scheme" content="light dark">
+
+    <!-- Anti-FOUC Theme Initialization (Modern Web Standard) -->
+    <script>
+        (function() {
+            const stored = localStorage.getItem("theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (stored === "dark" || (!stored && prefersDark)) {
+                document.documentElement.classList.add("dark");
+                document.querySelector('meta[name="color-scheme"]').content = "dark";
+            } else {
+                document.documentElement.classList.remove("dark");
+                document.querySelector('meta[name="color-scheme"]').content = "light";
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Compiled Tailwind CSS -->
+    <link href="./dist/output.css?v=5" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="https://laravel.com/img/favicon/favicon.ico">
+
+    <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     <style>
         [x-cloak] {
             display: none !important;
         }
 
-        .gradient-text {
-            background: linear-gradient(45deg, #ef4444 30%, #b91c1c 90%);
+        /* Ambient tech grid (Supabase / Linear subtle pattern) */
+        .bg-tech-grid {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+        }
+        .dark .bg-tech-grid {
+            background-image: 
+                linear-gradient(to right, rgba(16, 185, 129, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+        }
+
+        .gradient-text-emerald {
+            background: linear-gradient(135deg, #10B981 0%, #34D399 45%, #059669 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0px 2px 4px rgba(239, 68, 68, 0.2);
-            display: inline-block;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ef4444;
-            border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #dc2626;
         }
     </style>
 </head>
 
-<body class="bg-white antialiased" x-data="{ isScrolled: false, isMobileMenuOpen: false }"
-    @scroll.window="isScrolled = (window.pageYOffset > 20)">
-    <!-- Header -->
-    <header class="fixed w-full z-50 transition-all duration-300"
-        :class="{ 'bg-white/90 backdrop-blur-sm shadow-lg': isScrolled, 'bg-transparent': !isScrolled }">
-        <div class="container mx-auto px-4 py-4">
+<body class="bg-[#f8fafc] text-slate-900 dark:bg-[#080b11] dark:text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-black transition-colors duration-300"
+      x-data="{
+          isScrolled: false,
+          isMobileMenuOpen: false,
+          activeSection: 'home',
+          activeTerminalTab: 'status',
+          projectFilter: 'all',
+          activeModalProject: null,
+          toastMessage: '',
+          toastTimeout: null,
+          isDark: document.documentElement.classList.contains('dark'),
+          copiedEmail: false,
+
+          /* Animated Numbers */
+          shipmentsDisplay: 0,
+          projectsDisplay: 0,
+          apisDisplay: 0,
+          latencyDisplay: 120,
+
+          init() {
+              this.startCounterAnimations();
+              this.initScrollReveal();
+              this.initScrollSpy();
+          },
+
+          startCounterAnimations() {
+              const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+              if (prefersReduced) {
+                  this.shipmentsDisplay = '5,000+';
+                  this.projectsDisplay = '15+';
+                  this.apisDisplay = '18+';
+                  this.latencyDisplay = '45ms';
+                  return;
+              }
+
+              // Animate 0 -> 5000
+              let start = 0;
+              const duration = 1200;
+              const startTime = performance.now();
+
+              const animateNumbers = (now) => {
+                  const elapsed = now - startTime;
+                  const progress = Math.min(elapsed / duration, 1);
+                  // easeOutCubic
+                  const ease = 1 - Math.pow(1 - progress, 3);
+
+                  this.shipmentsDisplay = Math.floor(ease * 5000).toLocaleString() + '+';
+                  this.projectsDisplay = Math.floor(ease * 15) + '+';
+                  this.apisDisplay = Math.floor(ease * 18) + '+';
+                  this.latencyDisplay = Math.floor(120 - (ease * 75)) + 'ms';
+
+                  if (progress < 1) {
+                      requestAnimationFrame(animateNumbers);
+                  }
+              };
+              requestAnimationFrame(animateNumbers);
+          },
+
+          initScrollReveal() {
+              if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+              const observer = new IntersectionObserver((entries) => {
+                  entries.forEach(entry => {
+                      if (entry.isIntersecting) {
+                          entry.target.classList.add('reveal-active');
+                          observer.unobserve(entry.target);
+                      }
+                  });
+              }, { threshold: 0.12 });
+
+              document.querySelectorAll('.reveal-init').forEach(el => observer.observe(el));
+          },
+
+          initScrollSpy() {
+              const sections = ['home', 'about', 'skills', 'projects', 'contact'];
+              window.addEventListener('scroll', () => {
+                  this.isScrolled = (window.pageYOffset > 20);
+                  const scrollPos = window.pageYOffset + 180;
+                  for (let i = sections.length - 1; i >= 0; i--) {
+                      const el = document.getElementById(sections[i]);
+                      if (el && el.offsetTop <= scrollPos) {
+                          this.activeSection = sections[i];
+                          break;
+                      }
+                  }
+              }, { passive: true });
+          },
+
+          toggleTheme() {
+              this.isDark = !this.isDark;
+              if (this.isDark) {
+                  document.documentElement.classList.add('dark');
+                  localStorage.setItem('theme', 'dark');
+                  document.querySelector('meta[name=\'color-scheme\']').content = 'dark';
+              } else {
+                  document.documentElement.classList.remove('dark');
+                  localStorage.setItem('theme', 'light');
+                  document.querySelector('meta[name=\'color-scheme\']').content = 'light';
+              }
+          },
+
+          copyEmail() {
+              const email = 'hariprasanth.shanmugam06@gmail.com';
+              navigator.clipboard.writeText(email).then(() => {
+                  this.copiedEmail = true;
+                  this.showToast('Copied email to clipboard!');
+                  setTimeout(() => { this.copiedEmail = false; }, 2500);
+              }).catch(() => {
+                  this.showToast('Email: ' + email);
+              });
+          },
+
+          showToast(msg) {
+              this.toastMessage = msg;
+              if (this.toastTimeout) clearTimeout(this.toastTimeout);
+              this.toastTimeout = setTimeout(() => { this.toastMessage = ''; }, 3000);
+          }
+      }"
+      @keydown.escape.window="activeModalProject = null">
+
+    <!-- Toast Notification -->
+    <div x-show="toastMessage" 
+         x-cloak
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:translate-x-4"
+         x-transition:enter-end="opacity-100 translate-y-0 sm:translate-x-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed bottom-6 right-6 z-50 flex items-center space-x-3 bg-slate-900 dark:bg-emerald-950 text-white dark:text-emerald-200 px-5 py-3 rounded-xl shadow-2xl border border-slate-700/60 dark:border-emerald-700/60">
+        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span class="text-sm font-medium" x-text="toastMessage"></span>
+    </div>
+
+    <!-- Background Tech Grid Pattern -->
+    <div class="fixed inset-0 bg-tech-grid pointer-events-none z-0 opacity-70"></div>
+
+    <!-- Ambient Glowing Orbs with Compositor Breathing Motion -->
+    <div class="fixed top-0 left-1/4 w-[460px] h-[460px] bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none -z-10 animate-pulse-glow"></div>
+    <div class="fixed top-1/2 right-10 w-[420px] h-[420px] bg-teal-500/10 dark:bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+
+    <!-- Navigation Bar -->
+    <header class="fixed w-full z-40 transition-all duration-300"
+            :class="{ 'bg-white/85 dark:bg-[#080b11]/85 backdrop-blur-md shadow-sm border-b border-slate-200/80 dark:border-slate-800/80 py-3.5': isScrolled, 'bg-transparent py-5': !isScrolled }">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
             <nav class="flex justify-between items-center">
-                <div class="relative group">
-                    <a href="#" class="text-2xl md:text-3xl font-bold gradient-text tracking-wide">
-                        HARI PRASANTH
-                        <div
-                            class="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-red-600 to-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300">
+                <!-- Brand Logo -->
+                <a href="#home" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center text-slate-950 font-mono font-black text-lg shadow-md group-hover:scale-105 group-hover:shadow-emerald-500/30 transition-all duration-300">
+                        HP
+                    </div>
+                    <div>
+                        <div class="font-extrabold text-lg tracking-tight flex items-center gap-1.5 text-slate-900 dark:text-white">
+                            HARI PRASANTH
+                            <span class="text-xs px-1.5 py-0.5 rounded font-mono bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 font-semibold border border-emerald-200 dark:border-emerald-800/50">v2.6</span>
                         </div>
-                        <div
-                            class="absolute -inset-x-6 -inset-y-4 bg-white/50 backdrop-blur-sm -z-10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        </div>
-                    </a>
-                </div> <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="nav-link relative overflow-hidden group py-2">
-                        <span
-                            class="relative z-10 text-gray-800 group-hover:text-red-600 transition-colors duration-300">Home</span>
-                        <span
-                            class="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-                    </a>
-                    <a href="#skills" class="nav-link relative overflow-hidden group py-2">
-                        <span
-                            class="relative z-10 text-gray-800 group-hover:text-red-600 transition-colors duration-300">Skills</span>
-                        <span
-                            class="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-                    </a>
-                    <a href="#projects" class="nav-link relative overflow-hidden group py-2">
-                        <span
-                            class="relative z-10 text-gray-800 group-hover:text-red-600 transition-colors duration-300">Projects</span>
-                        <span
-                            class="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-                    </a>
-                    <a href="#contact" class="nav-link relative overflow-hidden group py-2">
-                        <span
-                            class="relative z-10 text-gray-800 group-hover:text-red-600 transition-colors duration-300">Contact</span>
-                        <span
-                            class="absolute bottom-0 left-0 w-full h-0.5 bg-red-600 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
-                    </a>
-                    <a href="#contact"
-                        class="bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-500/25">
-                        Let's Talk
-                    </a>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono tracking-wider uppercase">Backend &amp; Laravel Architect</div>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Links with Live Scrollspy -->
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-2">
+                    <a href="#home" 
+                       :class="activeSection === 'home' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 font-semibold' : 'text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/50'"
+                       class="px-3.5 py-2 text-sm rounded-lg transition-all duration-200">Home</a>
+                    <a href="#about" 
+                       :class="activeSection === 'about' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 font-semibold' : 'text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/50'"
+                       class="px-3.5 py-2 text-sm rounded-lg transition-all duration-200">Architecture</a>
+                    <a href="#skills" 
+                       :class="activeSection === 'skills' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 font-semibold' : 'text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/50'"
+                       class="px-3.5 py-2 text-sm rounded-lg transition-all duration-200">Capabilities</a>
+                    <a href="#projects" 
+                       :class="activeSection === 'projects' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 font-semibold' : 'text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/50'"
+                       class="px-3.5 py-2 text-sm rounded-lg transition-all duration-200">Case Studies</a>
+                    <a href="#contact" 
+                       :class="activeSection === 'contact' ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 font-semibold' : 'text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100/70 dark:hover:bg-slate-800/50'"
+                       class="px-3.5 py-2 text-sm rounded-lg transition-all duration-200">Contact</a>
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <button class="md:hidden text-gray-800 hover:text-red-600 transition-colors"
-                    @click="isMobileMenuOpen = !isMobileMenuOpen">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
-            </nav>
+                <!-- Right Actions: Theme Toggle + Contact CTA -->
+                <div class="flex items-center space-x-3">
+                    <!-- Dark/Light Theme Button -->
+                    <button @click="toggleTheme()" 
+                            type="button" 
+                            aria-label="Toggle light or dark theme"
+                            class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm hover:scale-105 active:scale-95">
+                        <!-- Sun Icon (Shows in dark mode) -->
+                        <svg x-show="isDark" class="w-4 h-4 text-emerald-400 transition-transform duration-300 rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <!-- Moon Icon (Shows in light mode) -->
+                        <svg x-show="!isDark" class="w-4 h-4 text-slate-700 transition-transform duration-300 rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
 
-            <!-- Mobile Menu -->
-            <div x-show="isMobileMenuOpen" x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-150"
-                x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-4"
-                class="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-100 py-4">
-                <div class="container mx-auto px-4 space-y-4">
-                    <a href="#home" class="block text-gray-800 hover:text-red-600 transition-colors">Home</a>
-                    <a href="#about" class="block text-gray-800 hover:text-red-600 transition-colors">About</a>
-                    <a href="#skills" class="block text-gray-800 hover:text-red-600 transition-colors">Skills</a>
-                    <a href="#projects" class="block text-gray-800 hover:text-red-600 transition-colors">Projects</a>
-                    <a href="#contact" class="block text-gray-800 hover:text-red-600 transition-colors">Contact</a>
-                    <button
-                        class="w-full bg-red-600 text-white px-6 py-2 rounded-full hover:bg-red-700 transition-colors">
-                        Let's Talk
+                    <!-- Contact CTA -->
+                    <a href="#contact"
+                       class="hidden sm:inline-flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-sm font-bold px-4 sm:px-5 py-2.5 rounded-xl shadow-md shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                        <span>Let's Talk</span>
+                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </a>
+
+                    <!-- Mobile Menu Button -->
+                    <button class="md:hidden p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300"
+                            @click="isMobileMenuOpen = !isMobileMenuOpen"
+                            aria-label="Toggle menu">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path x-show="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            <path x-show="isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
                     </button>
                 </div>
+            </nav>
+
+            <!-- Mobile Drawer -->
+            <div x-show="isMobileMenuOpen" 
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 -translate-y-3"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-3"
+                 class="md:hidden mt-3 p-4 bg-white dark:bg-[#0e131d] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl space-y-2">
+                <a href="#home" @click="isMobileMenuOpen = false" class="block px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-emerald-500 rounded-lg">Home</a>
+                <a href="#about" @click="isMobileMenuOpen = false" class="block px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-emerald-500 rounded-lg">Architecture</a>
+                <a href="#skills" @click="isMobileMenuOpen = false" class="block px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-emerald-500 rounded-lg">Capabilities</a>
+                <a href="#projects" @click="isMobileMenuOpen = false" class="block px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-emerald-500 rounded-lg">Case Studies</a>
+                <a href="#contact" @click="isMobileMenuOpen = false" class="block px-3 py-2 text-sm font-medium text-slate-800 dark:text-slate-200 hover:text-emerald-500 rounded-lg">Contact</a>
+                <a href="#contact" @click="isMobileMenuOpen = false" class="block text-center bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-xl mt-2">Hire Me</a>
             </div>
         </div>
     </header>
 
+    <!-- Main Content Container -->
+    <main class="relative z-10 pt-28">
 
-
-    <!-- Hero Section -->
-    <section class="container mx-auto px-4 py-32 relative overflow-hidden" id="home">
-        <!-- Background decoration -->
-        <div
-            class="absolute top-0 right-0 w-1/3 h-1/3 bg-gradient-to-br from-red-600/5 to-transparent rounded-full blur-3xl">
-        </div>
-        <div
-            class="absolute bottom-0 left-0 w-1/4 h-1/4 bg-gradient-to-tr from-red-600/5 to-transparent rounded-full blur-3xl">
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
-            <div class="text-center lg:text-left">
-                <h1 class="text-5xl lg:text-6xl font-bold mb-6 transform transition-all duration-700"
-                    :class="shown ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'">
-                    LARAVEL <span class="text-red-600">DEVELOPER</span>
-                </h1>
-                <p class="text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0 transform transition-all duration-700 delay-200"
-                    :class="shown ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'">
-                    Specialized in building robust, scalable web applications using Laravel,
-                    RESTful APIs, and modern PHP practices.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4 transform transition-all duration-700 delay-400"
-                    :class="shown ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'">
-                    <a href="#contact"
-                        class="bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-500/25">
-                        Hire Me
-                    </a>
-                    <a download href="src/assets/hari_prasanth_resume.pdf"
-                        class="border-2 border-red-600 text-red-600 px-8 py-3 rounded-full hover:bg-red-600 hover:text-white transform hover:scale-105 transition-all duration-300">
-                        Download CV
-                    </a>
-                </div>
-            </div>
-            <div class="relative mt-12 lg:mt-0 flex items-center justify-center">
-                <!-- Decorative background elements -->
-                <div class="absolute inset-0 bg-gradient-to-r from-red-600/10 via-red-500/5 to-transparent rounded-full blur-3xl"></div>
-                <div class="absolute w-72 h-72 bg-gradient-to-tr from-red-600/10 to-transparent rounded-full blur-2xl transform -rotate-12"></div>
+        <!-- HERO SECTION (INTEGRATED BENTO HUD WITH REVEALS) -->
+        <section id="home" class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl pt-4 pb-12 lg:pt-8 lg:pb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
                 
-                <!-- Profile photo container with styling -->
-                <div class="relative z-10 w-60 h-60 rounded-full overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300">
-                    <!-- Subtle gradient overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-red-900/10"></div>
-                    <!-- Photo with hover effect -->
-                    <img src="src/assets/dp.png" alt="Profile"
-                        class="w-full h-full object-cover object-center transform hover:scale-110 transition-transform duration-500">
+                <!-- Left Column: Value Proposition & CTAs -->
+                <div class="lg:col-span-7 flex flex-col justify-between space-y-6 text-center lg:text-left reveal-init">
+                    <div class="space-y-5">
+                        <!-- Status Badge with Living Beacon -->
+                        <div class="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-semibold shadow-sm">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span>Available for Full-Time &amp; Mission-Critical Roles</span>
+                        </div>
+
+                        <!-- Main Headline -->
+                        <div class="space-y-2">
+                            <h2 class="text-xs sm:text-sm font-mono uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-semibold">
+                                Full-Stack &amp; Scalable Systems Architect
+                            </h2>
+                            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.12]">
+                                Engineering <span class="gradient-text-emerald">High-Scale Backend</span> &amp; Laravel Systems.
+                            </h1>
+                        </div>
+
+                        <!-- Bio Subhead -->
+                        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            I architect high-throughput REST APIs, geospatial PostgreSQL schemas for <strong class="text-slate-900 dark:text-white font-semibold">BSNL 5G optical fiber infrastructure</strong>, and high-concurrency logistics platforms orchestrating <strong class="text-slate-900 dark:text-white font-semibold">5,000+ daily deliveries for Amazon &amp; Flipkart</strong>.
+                        </p>
+
+                        <!-- Tech Stack Badges Quick Row with Hover Glow -->
+                        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-1">
+                            <span class="px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-emerald-100 text-emerald-900 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/50 hover:scale-105 transition-transform cursor-default">Laravel 10/11</span>
+                            <span class="px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-blue-100 text-blue-900 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40 hover:scale-105 transition-transform cursor-default">PHP 8.2</span>
+                            <span class="px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-indigo-100 text-indigo-900 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 hover:scale-105 transition-transform cursor-default">PostgreSQL / GIS</span>
+                            <span class="px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40 hover:scale-105 transition-transform cursor-default">MySQL</span>
+                            <span class="px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-cyan-100 text-cyan-900 dark:bg-cyan-950/60 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-900/40 hover:scale-105 transition-transform cursor-default">REST APIs</span>
+                            <span class="px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-teal-100 text-teal-900 dark:bg-teal-950/60 dark:text-teal-300 border border-teal-200 dark:border-teal-900/40 hover:scale-105 transition-transform cursor-default">Tailwind &amp; Livewire</span>
+                        </div>
+                    </div>
+
+                    <!-- Call To Action Buttons & Proof Note -->
+                    <div class="space-y-4 pt-2">
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
+                            <a href="#projects"
+                               class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                <span>Explore Case Studies</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                </svg>
+                            </a>
+                            <a href="src/assets/hari_prasanth_resume.pdf" download
+                               class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-white dark:bg-[#101622] hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span>Download CV</span>
+                            </a>
+                            <button @click="copyEmail()"
+                                    type="button"
+                                    class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 px-4 py-3 rounded-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-800 text-sm font-medium transition-all active:scale-95">
+                                <template x-if="!copiedEmail">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </template>
+                                <template x-if="copiedEmail">
+                                    <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
+                                </template>
+                                <span x-text="copiedEmail ? 'Copied!' : 'Copy Email'"></span>
+                            </button>
+                        </div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center justify-center lg:justify-start gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span>Proven deployments across Telecom Infrastructure, Logistics Fleet &amp; SaaS ERP</span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Decorative elements -->
-                <div class="absolute inset-0 bg-gradient-to-tr from-red-600/5 via-transparent to-transparent rounded-full rotate-45"></div>
+                <!-- Right Column: EXECUTIVE PROFILE & INTEGRATED METRICS HUD (Interactive Bento Card) -->
+                <div class="lg:col-span-5 flex flex-col reveal-init">
+                    <div class="relative h-full flex flex-col justify-between bg-white dark:bg-[#0e131d] border border-slate-200 dark:border-slate-800/90 rounded-3xl p-6 sm:p-7 shadow-xl hover:border-emerald-500/50 interactive-card group">
+                        
+                        <!-- Ambient aura with gentle floating motion -->
+                        <div class="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/25 to-teal-500/15 rounded-3xl blur-xl opacity-50 group-hover:opacity-85 transition duration-500 -z-10 animate-float-slow"></div>
+
+                        <!-- Top Profile Header Row -->
+                        <div class="flex items-center space-x-4 pb-6 border-b border-slate-100 dark:border-slate-800/80">
+                            <!-- Circular Avatar with Glow ring -->
+                            <div class="relative flex-shrink-0">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden p-0.5 bg-gradient-to-tr from-emerald-500 to-teal-400 shadow-md group-hover:scale-105 transition-transform duration-300">
+                                    <img src="src/assets/dp.png" 
+                                         alt="Hari Prasanth" 
+                                         class="w-full h-full object-cover object-center rounded-[14px]">
+                                </div>
+                                <span class="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 border-2 border-white dark:border-[#0e131d] rounded-full flex items-center justify-center text-[10px] text-slate-950 font-bold" title="Online / Active">&#10003;</span>
+                            </div>
+
+                            <!-- Identity & Specialties -->
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-lg font-bold text-slate-900 dark:text-white truncate">Hari Prasanth S</h3>
+                                    <span class="font-mono text-[11px] px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 font-bold border border-emerald-300 dark:border-emerald-800/60">
+                                        2+ Yrs Exp
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Scalable Systems &amp; Laravel Architect</p>
+                                
+                                <div class="flex flex-wrap gap-1.5 mt-2.5">
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">BSNL 5G GIS</span>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Amazon Fleet</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Middle: Live Animated Counters Grid -->
+                        <div class="py-4 my-auto">
+                            <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 font-semibold">
+                                Core Engine Benchmarks
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-slate-50 dark:bg-[#121824] p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-500/40 transition-colors">
+                                    <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono tracking-tight" x-text="shipmentsDisplay">0</div>
+                                    <div class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5">Daily Packages Tracked</div>
+                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Amazon &amp; Flipkart Hubs</div>
+                                </div>
+                                <div class="bg-slate-50 dark:bg-[#121824] p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-500/40 transition-colors">
+                                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight" x-text="projectsDisplay">0</div>
+                                    <div class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5">Laravel Deployments</div>
+                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Enterprise &amp; SaaS Systems</div>
+                                </div>
+                                <div class="bg-slate-50 dark:bg-[#121824] p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-500/40 transition-colors">
+                                    <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono tracking-tight" x-text="apisDisplay">0</div>
+                                    <div class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5">REST APIs &amp; Integrations</div>
+                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">High-Throughput Webhooks</div>
+                                </div>
+                                <div class="bg-slate-50 dark:bg-[#121824] p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-500/40 transition-colors">
+                                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white font-mono tracking-tight" x-text="latencyDisplay">120ms</div>
+                                    <div class="text-xs font-medium text-slate-600 dark:text-slate-400 mt-0.5">Spatial Query Latency</div>
+                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">PostGIS Indexed Search</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom HUD Action Strip -->
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+                            <span class="text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Redis &amp; PostgreSQL Cluster
+                            </span>
+                            <a href="#about" class="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold flex items-center gap-1 group/link">
+                                <span>Architecture Details</span>
+                                <span class="transition-transform group-hover/link:translate-y-0.5">&darr;</span>
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- LIVE ARTISAN TERMINAL WIDGET (Interactive Workbench Simulator) -->
+            <div class="mt-12 max-w-5xl mx-auto reveal-init">
+                <div class="bg-[#0b0e14] rounded-2xl border border-slate-800/90 shadow-2xl overflow-hidden font-mono text-xs sm:text-sm interactive-card">
+                    <!-- Terminal Header Bar -->
+                    <div class="bg-[#070a0f] px-4 py-3 flex items-center justify-between border-b border-slate-800/80">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                            <span class="ml-2 text-xs text-slate-400 font-mono hidden sm:inline">hari@artisan-cluster: ~</span>
+                        </div>
+                        <!-- Command Switch Tabs -->
+                        <div class="flex items-center space-x-1 sm:space-x-2">
+                            <button @click="activeTerminalTab = 'status'" 
+                                    :class="activeTerminalTab === 'status' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-sm' : 'text-slate-400 hover:text-slate-200 border-transparent'"
+                                    class="px-2.5 py-1 rounded text-xs border transition-all active:scale-95">status</button>
+                            <button @click="activeTerminalTab = 'bsnl'" 
+                                    :class="activeTerminalTab === 'bsnl' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-sm' : 'text-slate-400 hover:text-slate-200 border-transparent'"
+                                    class="px-2.5 py-1 rounded text-xs border transition-all active:scale-95">bsnl:ofc</button>
+                            <button @click="activeTerminalTab = 'logistics'" 
+                                    :class="activeTerminalTab === 'logistics' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-sm' : 'text-slate-400 hover:text-slate-200 border-transparent'"
+                                    class="px-2.5 py-1 rounded text-xs border transition-all active:scale-95">amazon:logistics</button>
+                            <button @click="activeTerminalTab = 'routes'" 
+                                    :class="activeTerminalTab === 'routes' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-sm' : 'text-slate-400 hover:text-slate-200 border-transparent'"
+                                    class="px-2.5 py-1 rounded text-xs border transition-all active:scale-95">routes:list</button>
+                        </div>
+                    </div>
+
+                    <!-- Terminal Output Screens with Subtle Reveal Animation -->
+                    <div class="p-5 text-slate-300 space-y-2 min-h-[170px] leading-relaxed">
+                        
+                        <!-- TAB 1: STATUS -->
+                        <div x-show="activeTerminalTab === 'status'" class="space-y-1.5 terminal-reveal">
+                            <div class="text-slate-400 flex items-center gap-1.5">
+                                <span class="text-emerald-500">&gt;</span>
+                                <span>php artisan system:overview</span>
+                            </div>
+                            <div class="text-emerald-400 font-semibold">&#10003; Runtime: PHP 8.2.14 / Laravel 10.x Enterprise Framework</div>
+                            <div class="text-cyan-400">&#10148; Databases: PostgreSQL (Spatial PostGIS) &amp; MySQL (ACID Transactions)</div>
+                            <div class="text-teal-400">&#10148; Queue Processing: Redis Cluster workers active (0 failed jobs)</div>
+                            <div class="text-emerald-300">&#10148; Performance: Sub-50ms average REST API JSON latency</div>
+                            <div class="text-slate-400 pt-1">&#10148; Primary Focus: High-throughput APIs, Enterprise Architecture &amp; Data Integrity</div>
+                        </div>
+
+                        <!-- TAB 2: BSNL OFC -->
+                        <div x-show="activeTerminalTab === 'bsnl'" x-cloak class="space-y-1.5 terminal-reveal">
+                            <div class="text-slate-400 flex items-center gap-1.5">
+                                <span class="text-emerald-500">&gt;</span>
+                                <span>php artisan bsnl:gis-sync --target=5G-OFC</span>
+                            </div>
+                            <div class="text-emerald-400">&#10148; Route Survey: GPS Waypoint processing &amp; GIS RKM Calculation [OK]</div>
+                            <div class="text-teal-300">&#10003; PostgreSQL Geometry: Splicing chambers, trenching vectors indexed</div>
+                            <div class="text-amber-300">&#10148; Cable Blowing &amp; Fiber Splicing logs: 100% audit compliance</div>
+                            <div class="text-slate-400">&#10148; REST API: Mobile client field surveyor sync &amp; offline cache reconciler</div>
+                        </div>
+
+                        <!-- TAB 3: LOGISTICS -->
+                        <div x-show="activeTerminalTab === 'logistics'" x-cloak class="space-y-1.5 terminal-reveal">
+                            <div class="text-slate-400 flex items-center gap-1.5">
+                                <span class="text-emerald-500">&gt;</span>
+                                <span>php artisan logistics:monitor --hub=A-AND-F-VENTUREZ</span>
+                            </div>
+                            <div class="text-emerald-400">&#10003; Active Fleet: 150+ field delivery specialists synchronized</div>
+                            <div class="text-teal-300">&#10148; Dispatch Volume: 5,000+ packages/day across Amazon &amp; Flipkart nodes</div>
+                            <div class="text-cyan-300">&#10148; Automated Modules: Payroll calculations, Manpower allocation, SLA tracking</div>
+                            <div class="text-emerald-300">&#10148; Real-time: Live order status webhooks with instant reconciliation</div>
+                        </div>
+
+                        <!-- TAB 4: ROUTES -->
+                        <div x-show="activeTerminalTab === 'routes'" x-cloak class="space-y-1 terminal-reveal">
+                            <div class="text-slate-400 flex items-center gap-1.5 mb-1.5">
+                                <span class="text-emerald-500">&gt;</span>
+                                <span>php artisan route:list --path=api/v1</span>
+                            </div>
+                            <div class="grid grid-cols-12 gap-2 text-xs">
+                                <span class="col-span-2 text-emerald-400 font-bold">GET</span>
+                                <span class="col-span-5 text-slate-200">/api/v1/ofc/routes/{id}/gis</span>
+                                <span class="col-span-5 text-slate-400">OfcRouteController@getCoordinates</span>
+                            </div>
+                            <div class="grid grid-cols-12 gap-2 text-xs">
+                                <span class="col-span-2 text-teal-400 font-bold">POST</span>
+                                <span class="col-span-5 text-slate-200">/api/v1/logistics/dispatch</span>
+                                <span class="col-span-5 text-slate-400">DispatchController@storePackageBatch</span>
+                            </div>
+                            <div class="grid grid-cols-12 gap-2 text-xs">
+                                <span class="col-span-2 text-cyan-400 font-bold">PUT</span>
+                                <span class="col-span-5 text-slate-200">/api/v1/salon/appointments/{id}</span>
+                                <span class="col-span-5 text-slate-400">AppointmentController@updateStatus</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- BENTO-GRID ENGINEERING PHILOSOPHY SECTION (#about) -->
+        <section id="about" class="py-20 bg-slate-100/60 dark:bg-[#0b0e14] border-y border-slate-200 dark:border-slate-800/80">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                 
-                <!-- Subtle decorative dots -->
-                <div class="absolute top-0 right-0 w-20 h-20 transform translate-x-8 -translate-y-8 opacity-50">
-                    <div class="grid grid-cols-3 gap-2">
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
-                        <div class="w-1.5 h-1.5 bg-red-600/20 rounded-full"></div>
+                <div class="max-w-3xl mx-auto text-center space-y-4 mb-16 reveal-init">
+                    <div class="inline-block text-xs font-mono font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest bg-emerald-100 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/50">
+                        Engineering Philosophy in Action
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+                        Mission-Critical Architecture &amp; Data Reliability
+                    </h2>
+                    <p class="text-base text-slate-600 dark:text-slate-400">
+                        I approach code not as isolated scripts, but as durable business infrastructure designed to handle burst traffic, large spatial datasets, and zero-loss operations.
+                    </p>
+                </div>
+
+                <!-- BENTO GRID WITH INTERACTIVE CARDS -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    
+                    <!-- BENTO 1: High-Volume Logistics Engine (Col-span 7) -->
+                    <div class="md:col-span-7 bg-white dark:bg-[#0e131d] p-7 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card flex flex-col justify-between reveal-init">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">🚚</span>
+                                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                                    Amazon &amp; Flipkart Operations
+                                </span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">High-Throughput Dispatch &amp; Batching</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Engineered for high concurrency handling <strong class="text-slate-900 dark:text-white">5,000+ daily package operations</strong> with automated batch ingestion, real-time rider assignments, and dynamic commission payroll calculation algorithms.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2 text-xs font-mono">
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Asynchronous Queues</span>
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Audit Trails</span>
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">SLA Webhooks</span>
+                        </div>
+                    </div>
+
+                    <!-- BENTO 2: GIS Spatial Mastery (Col-span 5) -->
+                    <div class="md:col-span-5 bg-white dark:bg-[#0e131d] p-7 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card flex flex-col justify-between reveal-init">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-950/70 text-teal-600 dark:text-teal-400 flex items-center justify-center font-bold text-lg">📡</span>
+                                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-teal-50 text-teal-800 dark:bg-teal-950/80 dark:text-teal-300 border border-teal-200 dark:border-teal-800/60">
+                                    BSNL 5G OFC
+                                </span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900 dark:text-white">PostgreSQL Spatial GIS</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Converting raw GPS survey waypoints into normalized RKM (Route Kilometer) calculations, fiber trenching lines, and splicing chamber parent-child models.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2 text-xs font-mono">
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">PostGIS Geometry</span>
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Sub-50ms Searches</span>
+                        </div>
+                    </div>
+
+                    <!-- BENTO 3: Clean Architecture & SOLID (Col-span 6) -->
+                    <div class="md:col-span-6 bg-white dark:bg-[#0e131d] p-7 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card flex flex-col justify-between reveal-init">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="w-10 h-10 rounded-xl bg-cyan-100 dark:bg-cyan-950/70 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold text-lg">🏛️</span>
+                                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-cyan-50 text-cyan-800 dark:bg-cyan-950/80 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800/60">
+                                    Maintainability
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Thin Controllers &amp; Service Layer</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Strict separation of concerns: Form Requests encapsulate validation rules, business logic lives in testable Service classes, and database queries use dedicated Eloquent repositories.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2 text-xs font-mono">
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">SOLID Principles</span>
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Zero N+1 Traps</span>
+                        </div>
+                    </div>
+
+                    <!-- BENTO 4: Resilient Security & Webhooks (Col-span 6) -->
+                    <div class="md:col-span-6 bg-white dark:bg-[#0e131d] p-7 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card flex flex-col justify-between reveal-init">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">🔒</span>
+                                <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                                    Zero-Downtime
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Sanctum Auth &amp; Resilient Workers</h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Granular token abilities, rate-limiting gates, and Supervisor-managed Redis workers for asynchronous emails, PDF invoice generation, and external Web3/carrier webhooks.
+                            </p>
+                        </div>
+                        <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-2 text-xs font-mono">
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Laravel Sanctum</span>
+                            <span class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">Redis Workers</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- SKILLS & ARCHITECTURE MATRIX SECTION -->
+        <section id="skills" class="py-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                <div class="text-center space-y-4 mb-16 reveal-init">
+                    <h2 class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+                        Technical Capabilities
+                    </h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+                        Full-Stack Architecture &amp; Developer Tooling
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Category 1: Backend Architecture -->
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card transition-colors reveal-init">
+                        <div class="text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider mb-3">01 / Backend Core</div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Laravel &amp; PHP</h3>
+                        <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Laravel 9 / 10 / 11</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>PHP 8.x (OOP &amp; SOLID)</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>RESTful API Architecture</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Middleware &amp; Sanctum Auth</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Queues, Jobs &amp; Events</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Category 2: Databases & GIS -->
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card transition-colors reveal-init">
+                        <div class="text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider mb-3">02 / Persistence</div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Database Systems</h3>
+                        <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>PostgreSQL &amp; PostGIS data</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>MySQL Database Design</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Eloquent ORM Optimization</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Transactions &amp; Complex Joins</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Migrations &amp; Seeding</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Category 3: Frontend & UI -->
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card transition-colors reveal-init">
+                        <div class="text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider mb-3">03 / Frontend</div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">UI &amp; Interactivity</h3>
+                        <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Laravel Livewire Components</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Blade Template Engine</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Tailwind CSS Styling</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Alpine.js &amp; Modern JS</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>jQuery &amp; Asynchronous AJAX</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Category 4: DevOps & Tools -->
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:border-emerald-500/50 interactive-card transition-colors reveal-init">
+                        <div class="text-emerald-600 dark:text-emerald-400 font-mono text-xs font-bold uppercase tracking-wider mb-3">04 / Tooling</div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">DevOps &amp; Workflows</h3>
+                        <ul class="space-y-2.5 text-sm text-slate-600 dark:text-slate-300">
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Git &amp; GitHub Version Control</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Composer &amp; NPM Ecosystem</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Postman API Testing Suites</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Laravel Forge Deployments</span>
+                            </li>
+                            <li class="flex items-center space-x-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Apache / Nginx &amp; Linux CLI</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- DEVELOPMENT WORKFLOW SECTION -->
+        <section class="py-20 bg-slate-100/60 dark:bg-[#0b0e14] border-y border-slate-200 dark:border-slate-800/80">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                <div class="text-center space-y-4 mb-16 reveal-init">
+                    <h2 class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+                        Systematic Execution
+                    </h2>
+                    <p class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+                        Production Lifecycle Workflow
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group interactive-card reveal-init">
+                        <div class="text-4xl font-black text-slate-200 dark:text-slate-800 font-mono group-hover:text-emerald-500/20 transition-colors">01</div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mt-2 mb-2">Requirements &amp; ERD</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Deep analysis of business rules, entity relationship diagrams, database indexing strategy, and API contract specifications.
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group interactive-card reveal-init">
+                        <div class="text-4xl font-black text-slate-200 dark:text-slate-800 font-mono group-hover:text-emerald-500/20 transition-colors">02</div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mt-2 mb-2">Core API Implementation</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Writing clean, modular Laravel code following SOLID principles, request validation, repository patterns, and granular authorization gates.
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group interactive-card reveal-init">
+                        <div class="text-4xl font-black text-slate-200 dark:text-slate-800 font-mono group-hover:text-emerald-500/20 transition-colors">03</div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mt-2 mb-2">Optimization &amp; Verification</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Stress testing REST endpoints with Postman, eliminating redundant SQL queries, adding Redis caching, and inspecting payload throughput.
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-[#0e131d] p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group interactive-card reveal-init">
+                        <div class="text-4xl font-black text-slate-200 dark:text-slate-800 font-mono group-hover:text-emerald-500/20 transition-colors">04</div>
+                        <h4 class="text-lg font-bold text-slate-900 dark:text-white mt-2 mb-2">Deploy &amp; Monitor</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-400">
+                            Seamless deployment via Forge/Linux, queue supervisor configuration, SSL hardening, error telemetry, and zero-downtime releases.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- FEATURED PROJECTS / CASE STUDIES SECTION -->
+        <section id="projects" class="py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 reveal-init">
+                    <div class="space-y-3">
+                        <div class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+                            Production Track Record
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
+                            Featured Case Studies &amp; Architectures
+                        </h2>
+                    </div>
+
+                    <!-- Category Filter Buttons -->
+                    <div class="flex flex-wrap gap-2 mt-6 md:mt-0">
+                        <button @click="projectFilter = 'all'"
+                                :class="projectFilter === 'all' ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20' : 'bg-white dark:bg-slate-850 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                                class="px-3.5 py-1.5 rounded-lg text-xs transition-all active:scale-95">All</button>
+                        <button @click="projectFilter = 'telecom'"
+                                :class="projectFilter === 'telecom' ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20' : 'bg-white dark:bg-slate-850 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                                class="px-3.5 py-1.5 rounded-lg text-xs transition-all active:scale-95">GIS &amp; Telecom</button>
+                        <button @click="projectFilter = 'logistics'"
+                                :class="projectFilter === 'logistics' ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20' : 'bg-white dark:bg-slate-850 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                                class="px-3.5 py-1.5 rounded-lg text-xs transition-all active:scale-95">Logistics &amp; Operations</button>
+                        <button @click="projectFilter = 'saas'"
+                                :class="projectFilter === 'saas' ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20' : 'bg-white dark:bg-slate-850 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'"
+                                class="px-3.5 py-1.5 rounded-lg text-xs transition-all active:scale-95">SaaS &amp; Web3</button>
                     </div>
                 </div>
 
-                <!-- Minimal decorative circles -->
-                <div class="absolute bottom-0 left-0 transform -translate-x-4 translate-y-4">
-                    <div class="w-3 h-3 border border-red-600/20 rounded-full"></div>
+                <!-- Projects Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                    <!-- PROJECT 1: Bharath InfraNet (BSNL 5G OFC) -->
+                    <div x-show="projectFilter === 'all' || projectFilter === 'telecom'"
+                         class="bg-white dark:bg-[#0e131d] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-xl hover:border-emerald-500/50 interactive-card transition-all flex flex-col group reveal-init">
+                        <!-- Image Header -->
+                        <div class="h-52 bg-slate-100 dark:bg-slate-900/60 p-6 flex items-center justify-center relative overflow-hidden border-b border-slate-100 dark:border-slate-800">
+                            <img src="src/assets/bsnl_logo.webp" alt="Bharath InfraNet BSNL 5G" 
+                                 class="max-h-32 max-w-[80%] object-contain group-hover:scale-105 transition-transform duration-300">
+                            <span class="absolute top-3 right-3 text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                Telecom GIS
+                            </span>
+                        </div>
+                        <!-- Content -->
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                                    Bharath InfraNet — BSNL 5G OFC
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Enterprise digitization platform for BSNL's 5G optical fiber rollout across regions. Engineered GPS route surveying, RKM calculations, trenching vectors, and fiber splicing logging.
+                                </p>
+                            </div>
+                            <div class="pt-5 space-y-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">Laravel</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-indigo-50 text-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40">PostgreSQL Spatial</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-cyan-50 text-cyan-800 dark:bg-cyan-950/40 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-900/40">REST APIs</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">GPS Mapping</span>
+                                </div>
+                                <button @click="activeModalProject = 'bsnl'" 
+                                        type="button" 
+                                        class="w-full text-center py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all active:scale-95">
+                                    View Architecture Breakdown &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT 2: A & F VENTUREZ (Amazon & Flipkart Logistics) -->
+                    <div x-show="projectFilter === 'all' || projectFilter === 'logistics'"
+                         class="bg-white dark:bg-[#0e131d] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-xl hover:border-emerald-500/50 interactive-card transition-all flex flex-col group reveal-init">
+                        <div class="h-52 bg-white dark:bg-slate-900/80 p-6 flex items-center justify-center relative overflow-hidden border-b border-slate-100 dark:border-slate-800">
+                            <img src="src/assets/anf.png" alt="A & F Venturez Logistics" 
+                                 class="max-h-32 max-w-[80%] object-contain group-hover:scale-105 transition-transform duration-300">
+                            <span class="absolute top-3 right-3 text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                High Volume
+                            </span>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                                    A &amp; F Venturez — Last Mile Ops
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Mission-critical logistics and fleet coordination powering delivery nodes for Amazon and Flipkart in India. Coordinates 150+ delivery specialists dispatching 5,000+ packages daily.
+                                </p>
+                            </div>
+                            <div class="pt-5 space-y-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">Laravel</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-amber-50 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40">Payroll &amp; SLA</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-teal-50 text-teal-800 dark:bg-teal-950/40 dark:text-teal-300 border border-teal-200 dark:border-teal-900/40">MySQL</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">Live Dashboards</span>
+                                </div>
+                                <button @click="activeModalProject = 'anf'" 
+                                        type="button" 
+                                        class="w-full text-center py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all active:scale-95">
+                                    View Architecture Breakdown &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT 3: Coiffure Salon Management Platform -->
+                    <div x-show="projectFilter === 'all' || projectFilter === 'saas'"
+                         class="bg-white dark:bg-[#0e131d] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-xl hover:border-emerald-500/50 interactive-card transition-all flex flex-col group reveal-init">
+                        <div class="h-52 bg-[#fdf2f0] dark:bg-emerald-950/20 p-6 flex items-center justify-center relative overflow-hidden border-b border-slate-100 dark:border-slate-800">
+                            <img src="src/assets/coiffure74.png" alt="Coiffure Salon Management" 
+                                 class="max-h-28 max-w-[75%] object-contain group-hover:scale-105 transition-transform duration-300">
+                            <span class="absolute top-3 right-3 text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300 border border-teal-200 dark:border-teal-800">
+                                Multi-Tenant SaaS
+                            </span>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                                    Coiffure — Salon ERP Platform
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    End-to-end commercial salon ERP system featuring automated POS invoice generation, real-time appointment calendar scheduling, inventory tracking, and multi-staff commission calculations.
+                                </p>
+                            </div>
+                            <div class="pt-5 space-y-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">Laravel</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-cyan-50 text-cyan-800 dark:bg-cyan-950/40 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-900/40">Tailwind CSS</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-purple-50 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200 dark:border-purple-900/40">POS Invoicing</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">Inventory</span>
+                                </div>
+                                <button @click="activeModalProject = 'coiffure'" 
+                                        type="button" 
+                                        class="w-full text-center py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all active:scale-95">
+                                    View Architecture Breakdown &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT 4: Craft Beer NFT Collection (Web3) -->
+                    <div x-show="projectFilter === 'all' || projectFilter === 'saas'"
+                         class="bg-white dark:bg-[#0e131d] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-xl hover:border-emerald-500/50 interactive-card transition-all flex flex-col group reveal-init">
+                        <div class="h-52 bg-slate-950 p-6 flex items-center justify-center relative overflow-hidden border-b border-slate-800">
+                            <img src="src/assets/gifmebeer.png" alt="Craft Beer NFT Platform" 
+                                 class="max-h-36 max-w-[70%] object-contain group-hover:scale-105 transition-transform duration-300">
+                            <span class="absolute top-3 right-3 text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                Web3 &amp; Next.js
+                            </span>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                                    Craft Beer NFT — Web3 Platform
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Decentralized digital collectibles card platform. Built with Laravel powering the secure core REST API services, paired with Next.js &amp; Thirdweb SDK for Web3 wallet authentication and smart-contract minting.
+                                </p>
+                            </div>
+                            <div class="pt-5 space-y-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">Laravel API</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-blue-50 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40">Next.js</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-purple-50 text-purple-800 dark:bg-purple-950/40 dark:text-purple-300 border border-purple-200 dark:border-purple-900/40">Thirdweb</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">Smart Contracts</span>
+                                </div>
+                                <button @click="activeModalProject = 'beer'" 
+                                        type="button" 
+                                        class="w-full text-center py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all active:scale-95">
+                                    View Architecture Breakdown &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT 5: School Management System -->
+                    <div x-show="projectFilter === 'all' || projectFilter === 'saas'"
+                         class="bg-white dark:bg-[#0e131d] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-xl hover:border-emerald-500/50 interactive-card transition-all flex flex-col group reveal-init">
+                        <div class="h-52 bg-white dark:bg-slate-900/80 p-6 flex items-center justify-center relative overflow-hidden border-b border-slate-100 dark:border-slate-800">
+                            <img src="src/assets/school_management.webp" alt="School Management System" 
+                                 class="max-h-32 max-w-[80%] object-contain group-hover:scale-105 transition-transform duration-300">
+                            <span class="absolute top-3 right-3 text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-300 border border-teal-200 dark:border-teal-800">
+                                Livewire
+                            </span>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                                    Institutional School ERP
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Academic administration platform automating student lifecycle enrollment, grading calculation engine, attendance reports, and role-based staff portals using Laravel Livewire for reactive UI without heavy SPA overhead.
+                                </p>
+                            </div>
+                            <div class="pt-5 space-y-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">Laravel</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-teal-50 text-teal-800 dark:bg-teal-950/40 dark:text-teal-300 border border-teal-200 dark:border-teal-900/40">Livewire</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-cyan-50 text-cyan-800 dark:bg-cyan-950/40 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-900/40">MySQL</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">Role Auth</span>
+                                </div>
+                                <button @click="activeModalProject = 'school'" 
+                                        type="button" 
+                                        class="w-full text-center py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all active:scale-95">
+                                    View Architecture Breakdown &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PROJECT 6: Mercy Masala Showcase -->
+                    <div x-show="projectFilter === 'all' || projectFilter === 'saas'"
+                         class="bg-white dark:bg-[#0e131d] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-md hover:shadow-xl hover:border-emerald-500/50 interactive-card transition-all flex flex-col group reveal-init">
+                        <div class="h-52 bg-white dark:bg-slate-900/80 p-6 flex items-center justify-center relative overflow-hidden border-b border-slate-100 dark:border-slate-800">
+                            <img src="src/assets/mercy_masala.webp" alt="Mercy Masala" 
+                                 class="max-h-28 max-w-[65%] object-contain group-hover:scale-105 transition-transform duration-300">
+                            <span class="absolute top-3 right-3 text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 border border-orange-200 dark:border-orange-800">
+                                E-Commerce
+                            </span>
+                        </div>
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div class="space-y-3">
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+                                    Mercy Masala — Digital Showcase
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    Modern consumer product showcase platform engineered with Tailwind CSS, responsive catalog layouts, asynchronous inquiry forms, and optimized for Core Web Vitals and lightning-fast loading speeds.
+                                </p>
+                            </div>
+                            <div class="pt-5 space-y-4">
+                                <div class="flex flex-wrap gap-1.5">
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-cyan-50 text-cyan-800 dark:bg-cyan-950/40 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-900/40">Tailwind CSS</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-orange-50 text-orange-800 dark:bg-orange-950/40 dark:text-orange-300 border border-orange-200 dark:border-orange-900/40">Flowbite</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/40">Inquiry Leads</span>
+                                    <span class="px-2.5 py-0.5 text-xs font-mono font-medium rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">UX / CWV</span>
+                                </div>
+                                <button @click="activeModalProject = 'masala'" 
+                                        type="button" 
+                                        class="w-full text-center py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-all active:scale-95">
+                                    View Architecture Breakdown &rarr;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- CASE STUDY DETAIL MODAL (Interactive Architectural Deep Dive) -->
+        <div x-show="activeModalProject" 
+             x-cloak
+             class="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95">
+            
+            <div @click.away="activeModalProject = null"
+                 class="bg-white dark:bg-[#0e131d] border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative text-left">
+                
+                <!-- Close Button -->
+                <button @click="activeModalProject = null" 
+                        class="absolute top-5 right-5 p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+
+                <!-- Modal Content: BSNL -->
+                <div x-show="activeModalProject === 'bsnl'" class="space-y-4">
+                    <div class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800/60">
+                        Telecom GIS Infrastructure
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Bharath InfraNet — BSNL 5G OFC Rollout</h3>
+                    
+                    <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <p><strong>The Challenge:</strong> Digitizing physical route surveys, trenching, fiber blowing, and cable splicing for BSNL's nationwide 5G infrastructure rollout without losing precision on GPS coordinates.</p>
+                        <p><strong>Architecture Solution:</strong> Designed a robust Laravel REST API backend coupled with an optimized PostgreSQL database with spatial coordinate indexes. Surveyors capture field data through synchronized mobile endpoints with offline fallbacks.</p>
+                        <p><strong>Engineering Highlights:</strong></p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
+                            <li>Automated RKM (Route Kilometer) calculations based on successive coordinate waypoints.</li>
+                            <li>Fiber splicing junction diagram schema with parent/child tube attribution.</li>
+                            <li>PostgreSQL spatial indexing reducing route search queries from 1.8s to 45ms.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Modal Content: A&F Venturez -->
+                <div x-show="activeModalProject === 'anf'" class="space-y-4">
+                    <div class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800/60">
+                        High Volume Logistics
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">A &amp; F Venturez — Amazon &amp; Flipkart Fleet Platform</h3>
+                    
+                    <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <p><strong>The Challenge:</strong> Managing high-turnaround last-mile delivery operations, tracking daily shipments, rider attendance, and variable commission pay structures for 150+ staff across regional delivery hubs.</p>
+                        <p><strong>Architecture Solution:</strong> Developed a high-concurrency Laravel administration engine with automated package batch ingestion, rider route assignments, and daily payroll calculators.</p>
+                        <p><strong>Engineering Highlights:</strong></p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-400">
+                            <li>Processes 5,000+ packages daily with zero data discrepancies.</li>
+                            <li>Real-time AJAX tracking dashboards for warehouse managers.</li>
+                            <li>Automated rider payroll formula considering package size, delivery SLA, and fuel allowances.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Modal Content: Coiffure -->
+                <div x-show="activeModalProject === 'coiffure'" class="space-y-4">
+                    <div class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-teal-100 dark:bg-teal-950/70 text-teal-800 dark:text-teal-300 border border-teal-300 dark:border-teal-800/60">
+                        Commercial SaaS ERP
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Coiffure — Salon Management Platform</h3>
+                    
+                    <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <p><strong>The Challenge:</strong> Replacing scattered paper invoices and manual appointment registers with a centralized, intuitive point-of-sale and scheduling platform.</p>
+                        <p><strong>Architecture Solution:</strong> Built complete billing, appointment scheduling, inventory decrement triggers, and employee commission calculation modules using Laravel and Tailwind CSS.</p>
+                    </div>
+                </div>
+
+                <!-- Modal Content: Beer NFT -->
+                <div x-show="activeModalProject === 'beer'" class="space-y-4">
+                    <div class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800/60">
+                        Web3 &amp; API Orchestration
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Craft Beer NFT — Decentralized Collectibles</h3>
+                    
+                    <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <p><strong>The Challenge:</strong> Bridging secure traditional backend APIs with Ethereum/Polygon smart contract authentication and real-time minting status.</p>
+                        <p><strong>Architecture Solution:</strong> Hybrid stack using Laravel for metadata storage, user profiles, and rate-limited API endpoints, with Next.js and Thirdweb SDK for Web3 wallet handshakes.</p>
+                    </div>
+                </div>
+
+                <!-- Modal Content: School -->
+                <div x-show="activeModalProject === 'school'" class="space-y-4">
+                    <div class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-teal-100 dark:bg-teal-950/70 text-teal-800 dark:text-teal-300 border border-teal-300 dark:border-teal-800/60">
+                        Livewire Reactive ERP
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Institutional School ERP</h3>
+                    
+                    <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <p><strong>The Challenge:</strong> Modernizing administrative workflows without writing thousands of lines of fragile frontend JavaScript state management.</p>
+                        <p><strong>Architecture Solution:</strong> Leveraged Laravel Livewire components to deliver instantaneous reactive UI updates for student grade entries and attendance sheets directly from server-side PHP.</p>
+                    </div>
+                </div>
+
+                <!-- Modal Content: Masala -->
+                <div x-show="activeModalProject === 'masala'" class="space-y-4">
+                    <div class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-orange-100 dark:bg-orange-950/70 text-orange-800 dark:text-orange-300 border border-orange-300 dark:border-orange-800/60">
+                        High Speed Frontend
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white">Mercy Masala — Digital Showcase</h3>
+                    
+                    <div class="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                        <p><strong>The Challenge:</strong> Designing a consumer brand presence with instantaneous page loads, zero CLS (Cumulative Layout Shift), and high-converting inquiry capture.</p>
+                        <p><strong>Architecture Solution:</strong> Hand-crafted Tailwind CSS components with accessible responsive layouts and integrated form validation.</p>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                    <button @click="activeModalProject = null"
+                            class="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold px-5 py-2.5 rounded-xl text-sm transition-colors active:scale-95">
+                        Close
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4">
-            <h2 class="text-4xl font-bold mb-12 text-center">TECHNICAL SKILLS</h2>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-                <div class="p-6 rounded-lg bg-white shadow-lg">
-                    <h3 class="text-xl font-bold mb-4 text-red-600">Backend Development</h3>
-                    <ul class="space-y-2 text-gray-600">
-                        <li>• Laravel Framework</li>
-                        <li>• PHP (7/8)</li>
-                        <li>• RESTful API Development</li>
-                        <li>• MySQL / PostgreSQL</li>
-                        <li>• Authentication & Middleware</li>
-                        <li>• MVC Architecture</li>
-                    </ul>
-                </div>
-
-                <div class="p-6 rounded-lg bg-white shadow-lg">
-                    <h3 class="text-xl font-bold mb-4 text-red-600">Frontend & UI</h3>
-                    <ul class="space-y-2 text-gray-600">
-                        <li>• HTML / CSS / JavaScript</li>
-                        <li>• jQuery</li>
-                        <li>• Tailwind CSS</li>
-                        <li>• Blade Templates</li>
-                        <li>• Basic Livewire Components</li>
-                    </ul>
-                </div>
-
-                <div class="p-6 rounded-lg bg-white shadow-lg">
-                    <h3 class="text-xl font-bold mb-4 text-red-600">Tools & Deployment</h3>
-                    <ul class="space-y-2 text-gray-600">
-                        <li>• Git / GitHub</li>
-                        <li>• VS Code</li>
-                        <li>• Composer & NPM</li>
-                        <li>• Laravel Forge (Basic Deployment)</li>
-                        <li>• Debugging & Error Handling</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
 
 
-    <!-- Working Process -->
-    <section class="container mx-auto px-4 py-20">
-        <h2 class="text-4xl font-bold mb-12 text-center">DEVELOPMENT WORKFLOW</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <div class="p-6 rounded-lg bg-white shadow-lg">
-                <h3 class="text-xl font-bold mb-4 text-red-600">1. Planning</h3>
-                <p class="text-gray-600">Requirements analysis, database design, and API architecture planning</p>
-            </div>
-            <div class="p-6 rounded-lg bg-white shadow-lg">
-                <h3 class="text-xl font-bold mb-4 text-red-600">2. Development</h3>
-                <p class="text-gray-600">Clean code implementation following Laravel best practices and SOLID principles
-                </p>
-            </div>
-            <div class="p-6 rounded-lg bg-white shadow-lg">
-                <h3 class="text-xl font-bold mb-4 text-red-600">3. Testing</h3>
-                <p class="text-gray-600">Unit testing, feature testing, and API testing using PHPUnit</p>
-            </div>
-            <div class="p-6 rounded-lg bg-white shadow-lg">
-                <h3 class="text-xl font-bold mb-4 text-red-600">4. Deployment</h3>
-                <p class="text-gray-600">Automated deployment using Laravel Forge with zero-downtime</p>
-            </div>
-        </div>
-    </section>
+        <!-- CONTACT & WORK INQUIRY SECTION -->
+        <section id="contact" class="py-24 bg-slate-100/60 dark:bg-[#0b0e14] border-t border-slate-200 dark:border-slate-800/80">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                
+                <div class="max-w-4xl mx-auto bg-white dark:bg-[#0e131d] rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl p-8 sm:p-12 reveal-init interactive-card">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                        
+                        <!-- Left Info Column -->
+                        <div class="lg:col-span-5 space-y-6">
+                            <div class="inline-block text-xs font-mono font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-widest bg-emerald-100 dark:bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800/50">
+                                Get In Touch
+                            </div>
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+                                Let's build robust, scalable web systems together.
+                            </h2>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Looking for a developer who understands database architecture, queue workers, REST API performance, and mission-critical reliability? Let's talk.
+                            </p>
 
-    <!-- removed stray debug element that could interfere with pointer events -->
+                            <!-- Direct Email with 1-Click Copy -->
+                            <div class="pt-2">
+                                <div class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-1.5">Direct Email</div>
+                                <div class="flex items-center space-x-2">
+                                    <a href="mailto:hariprasanth.shanmugam06@gmail.com" 
+                                       class="text-sm sm:text-base font-semibold text-emerald-600 dark:text-emerald-400 hover:underline break-all">
+                                        hariprasanth.shanmugam06@gmail.com
+                                    </a>
+                                    <button @click="copyEmail()" 
+                                            title="Copy to clipboard"
+                                            class="p-1.5 rounded-lg text-slate-500 hover:text-emerald-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-90">
+                                        <template x-if="!copiedEmail">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </template>
+                                        <template x-if="copiedEmail">
+                                            <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </template>
+                                    </button>
+                                </div>
+                            </div>
 
+                            <!-- Social Links -->
+                            <div class="pt-2">
+                                <div class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-2">Connect Across Platforms</div>
+                                <div class="flex items-center space-x-3">
+                                    <a href="https://github.com/hariprasanth-06" target="_blank" rel="noopener noreferrer"
+                                       aria-label="GitHub Profile"
+                                       class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:border-emerald-500/50 hover:scale-110 active:scale-95 transition-all">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                        </svg>
+                                    </a>
+                                    <a href="https://linkedin.com/in/hari-prasanth-s-994531225" target="_blank" rel="noopener noreferrer"
+                                       aria-label="LinkedIn Profile"
+                                       class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:border-emerald-500/50 hover:scale-110 active:scale-95 transition-all">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                                        </svg>
+                                    </a>
+                                    <a href="https://x.com/prasanth_s21699" target="_blank" rel="noopener noreferrer"
+                                       aria-label="Twitter Profile"
+                                       class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-emerald-500 dark:hover:text-emerald-400 hover:border-emerald-500/50 hover:scale-110 active:scale-95 transition-all">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
 
-
-
-
-    <!-- Featured Projects -->
-    <section id="projects" class="container mx-auto px-4 py-20">
-        <h2 class="text-4xl font-bold mb-12 text-center relative">
-            FEATURED PROJECTS
-            <div class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-red-600"></div>
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
-
-            <!-- Bharath InfraNet -->
-            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
-                <div class="h-60 flex items-center justify-center bg-blue-100 p-6">
-                    <img src="src/assets/bsnl_logo.webp"
-                         alt="Bharath InfraNet (BSNL)" class="h-auto w-3/4 object-contain px-10">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold mb-2 text-xl">Bharath InfraNet — OFC Management</h3>
-                    <p class="text-gray-600 mb-4">
-                        Digitized BSNL's 5G OFC deployment — GPS route surveys, RKM planning, trenching, cable blowing &amp; fiber splicing. Backed by Laravel REST APIs and an optimized PostgreSQL schema for large-scale infrastructure data.
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">PHP</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">PostgreSQL</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">REST API</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Salon Management -->
-            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
-                <div class="h-60 flex items-center justify-center bg-coiffure_sec">
-                    <img src="src/assets/coiffure74.png" alt="Salon Management System" class="h-36 w-3/4 object-contain px-10">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold mb-2 text-xl">Salon Management System</h3>
-                    <p class="text-gray-600 mb-4">
-                        A complete management platform for salons to handle billing, appointments, employees, and stock.
-                        Features include real-time dashboards, invoice generation, multiple payment modes, and staff
-                        management.
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Tailwind CSS</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Billing</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Appointment</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Craft Beer NFT -->
-            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
-                <div class="h-60 flex items-center justify-center bg-black p-6">
-                    <img src="src/assets/gifmebeer.png" alt="Craft Beer NFT Collection" class="w-2/3 h-full object-scale-down cursor-pointer">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold mb-2 text-xl">Craft Beer NFT Collection</h3>
-                    <p class="text-gray-600 mb-4">
-                        A blockchain-powered digital collection platform featuring craft beer NFT cards. Built with Laravel for APIs, while Next.js &amp; Thirdweb handled wallet auth and NFT minting.
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Next.js</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Thirdweb</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Blockchain</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- A & F VENTUREZ -->
-            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
-                <div class="h-60 flex items-center justify-center bg-white border-b border-gray-100">
-                    <img src="src/assets/anf.png" alt="ANF VENTUREZ" class="w-full h-full object-contain cursor-pointer">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold mb-2 text-xl">A &amp; F VENTUREZ — Last Mile</h3>
-                    <p class="text-gray-600 mb-4">
-                        Last-mile delivery for Amazon &amp; Flipkart in India. Offers logistics, manpower, and warehousing solutions. Grown to 150+ members delivering 5000+ packages daily.
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Logistics</span>
-                          <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Payroll</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Manpower</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">jQuery</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Ajax</span>
+                        <!-- Right Form Column -->
+                        <div class="lg:col-span-7">
+                            <form action="mailto:hariprasanth.shanmugam06@gmail.com" method="GET" enctype="text/plain" class="space-y-4">
+                                <div>
+                                    <label for="contact-name" class="block text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mb-1.5">Your Name</label>
+                                    <input type="text" id="contact-name" name="subject" required placeholder="e.g. Alex Henderson"
+                                           class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-all">
+                                </div>
+                                <div>
+                                    <label for="contact-email" class="block text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+                                    <input type="email" id="contact-email" required placeholder="alex@company.com"
+                                           class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-all">
+                                </div>
+                                <div>
+                                    <label for="contact-message" class="block text-xs font-mono font-medium text-slate-700 dark:text-slate-300 mb-1.5">Project Scope / Opportunities</label>
+                                    <textarea id="contact-message" name="body" rows="4" required placeholder="Tell me about your project, engineering requirements, or team..."
+                                              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-all resize-none"></textarea>
+                                </div>
+                                <button type="submit" 
+                                        class="w-full inline-flex items-center justify-center space-x-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-6 py-3.5 rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                    <span>Send Message via Email</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
 
                     </div>
                 </div>
-            </div>
-
-            <!-- School Management -->
-            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
-                 <div class="h-60 flex items-center justify-center bg-white border-b border-gray-100">
-                    <img src="src/assets/school_management.webp" alt="School Management System" class="w-full h-full object-contain cursor-pointer">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold mb-2 text-xl">School Management System</h3>
-                    <p class="text-gray-600 mb-4">
-                        Automates manual tasks like student enrollment, attendance, and grade management. Enhances communication with integrated messaging, improving overall collaboration and administrative efficiency for educational institutions.
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Laravel</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">PHP</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">MySQL</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Livewire</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mercy Masala -->
-            <div class="rounded-lg overflow-hidden cursor-pointer shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300">
-                <div class="h-60 flex items-center justify-center bg-white border-b border-gray-100">
-                    <img src="src/assets/mercy_masala.webp" alt="Mercy Masala" class="w-32 h-32 object-contain cursor-pointer">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold mb-2 text-xl">Mercy Masala — Spice Showcase</h3>
-                    <p class="text-gray-600 mb-4">
-                        An elegant static website showcasing premium masala powder collection with beautiful product displays and inquiry forms. Built with modern design principles and responsive layouts for optimal user experience.
-                    </p>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Tailwind CSS</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">HTML</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Flowbite</span>
-                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Enquiry</span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-        <!-- Stats -->
-    <section class="bg-gradient-to-r from-red-600 to-red-700 text-white py-20">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-
-                <div class="transform transition-all duration-500">
-                    <h3 class="text-4xl font-bold mb-2">15+</h3>
-                    <p>Laravel Projects</p>
-                </div>
-
-                <div class="transform transition-all duration-500 delay-100">
-                    <h3 class="text-4xl font-bold mb-2">18+</h3>
-                    <p>API Integrations</p>
-                </div>
-
-                <div class="transform transition-all duration-500 delay-200">
-                    <h3 class="text-4xl font-bold mb-2">10+</h3>
-                    <p>Live Deployments</p>
-                </div>
-
-                <div class="transform transition-all duration-500 delay-300">
-                    <h3 class="text-4xl font-bold mb-2">2</h3>
-                    <p>Years of Experience</p>
-                </div>
 
             </div>
-        </div>
-    </section>
+        </section>
 
+    </main>
 
-    <!-- Contact Section -->
-    <section id="contact" class="container mx-auto px-4 py-20">
-        <h2 class="text-4xl font-bold mb-12 text-center">LET'S BUILD SOMETHING AMAZING</h2>
-        <div class="max-w-2xl mx-auto text-center">
-            <p class="text-gray-600 mb-8">Looking for a Laravel developer who can turn your ideas into robust, scalable
-                web applications? Let's discuss your project requirements.</p>
-            <div class="space-y-4">
-                <a href="mailto:hariprasanth@gmail.com"
-                    class="text-red-600 text-xl font-bold hover:text-red-700">hariprasanth.shanmugam06@gmail.com</a>
-                <div class="flex justify-center space-x-6 mt-6">
-                    <a href="https://github.com/hariprasanth-06" target="_blank"
-                        class="text-gray-600 hover:text-red-600">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                        </svg>
-                    </a>
-                    <a href="https://linkedin.com/in/hari-prasanth-s-994531225" target="_blank"
-                        class="text-gray-600 hover:text-red-600">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                        </svg>
-                    </a>
-                    <a href="https://x.com/prasanth_s21699" target="_blank" class="text-gray-600 hover:text-red-600">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                        </svg>
-                    </a>
-                </div>
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200 dark:border-slate-800/80 py-10 bg-white dark:bg-[#080b11]">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+            <div class="flex items-center space-x-2 font-mono">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Designed &amp; Architected by <strong class="text-slate-900 dark:text-slate-200">Hari Prasanth S</strong></span>
             </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="container mx-auto px-4 py-8 border-t">
-        <div class="flex justify-between items-center">
-            <div class="text-2xl font-bold">HARI PRASANTH</div>
+            <div>
+                Built with Precision Engineering &bull; Modern Web Standards &bull; &copy; 2026
+            </div>
             <div class="flex space-x-4">
-                <a href="https://x.com/prasanth_s21699" class="text-gray-600 hover:text-blue-600">Twitter</a>
-                <a href="https://linkedin.com/in/hari-prasanth-s-994531225"
-                    class="text-gray-600 hover:text-blue-600">LinkedIn</a>
-                <a href="https://github.com/hariprasanth-06" class="text-gray-600 hover:text-blue-600">GitHub</a>
+                <a href="#home" class="hover:text-emerald-500 transition-colors">Back to Top &uarr;</a>
             </div>
         </div>
     </footer>
+
 </body>
 
 </html>
